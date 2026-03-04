@@ -1,0 +1,36 @@
+# 💳 Online Payment Transaction System (Java)
+
+## 📌 Project Description
+A console-based Online Payment Processing System developed using Core Java.
+The system simulates secure transactions with proper validation and exception handling.
+
+## 🚀 Features
+- Create User Account
+- Add Balance
+- Make Payment
+- Transaction Validation
+- Insufficient Balance Handling
+- Custom Exception Handling
+- Transaction History
+
+## 🛠 Concepts Used
+- OOP (Classes & Objects)
+- Encapsulation
+- Exception Handling
+- Custom Exceptions
+- Input Validation
+- Transaction Logic
+
+## 🔐 Validations Included
+- Invalid Payment Amount
+- Insufficient Balance
+- Negative Input Handling
+- Account Not Found
+
+## ▶ How to Run
+1. Clone the repository
+2. Compile Java files
+3. Run Main class
+
+## 👨‍💻 Author
+Rushikesh Walgude

@@ -1,0 +1,91 @@
+package com.OnlinePaymentSystem;
+
+import java.sql.*;
+import java.util.Scanner;
+
+public class PaymentService {
+
+    public static void deposit(int userId) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter Amount to Deposit: ");
+        double amount = sc.nextDouble();
+
+        try {
+            Connection con = DBConnection.getConnection();
+
+            String update = "UPDATE users SET balance = balance + ? WHERE id=?";
+            PreparedStatement ps = con.prepareStatement(update);
+            ps.setDouble(1, amount);
+            ps.setInt(2, userId);
+            ps.executeUpdate();
+
+            String txn = "INSERT INTO transactions(user_id,type,amount) VALUES(?,?,?)";
+            PreparedStatement ps2 = con.prepareStatement(txn);
+            ps2.setInt(1, userId);
+            ps2.setString(2, "CREDIT");
+            ps2.setDouble(3, amount);
+            ps2.executeUpdate();
+
+            System.out.println("Deposit Successful!");
+        } catch (Exception e) {
+            System.out.println("Deposit Failed!");
+        }
+    }
+
+    public static void withdraw(int userId) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter Amount to Withdraw: ");
+        double amount = sc.nextDouble();
+
+        try {
+            Connection con = DBConnection.getConnection();
+
+            String check = "SELECT balance FROM users WHERE id=?";
+            PreparedStatement ps = con.prepareStatement(check);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                double balance = rs.getDouble("balance");
+
+                if (balance >= amount) {
+                    String update = "UPDATE users SET balance = balance - ? WHERE id=?";
+                    PreparedStatement ps2 = con.prepareStatement(update);
+                    ps2.setDouble(1, amount);
+                    ps2.setInt(2, userId);
+                    ps2.executeUpdate();
+
+                    String txn = "INSERT INTO transactions(user_id,type,amount) VALUES(?,?,?)";
+                    PreparedStatement ps3 = con.prepareStatement(txn);
+                    ps3.setInt(1, userId);
+                    ps3.setString(2, "DEBIT");
+                    ps3.setDouble(3, amount);
+                    ps3.executeUpdate();
+
+                    System.out.println("Withdrawal Successful!");
+                } else {
+                    System.out.println("Insufficient Balance!");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Withdrawal Failed!");
+        }
+    }
+
+    public static void checkBalance(int userId) {
+        try {
+            Connection con = DBConnection.getConnection();
+            String query = "SELECT balance FROM users WHERE id=?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, userId);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                System.out.println("Current Balance: " + rs.getDouble("balance"));
+            }
+        } catch (Exception e) {
+            System.out.println("Error Fetching Balance");
+        }
+    }
+}
+
